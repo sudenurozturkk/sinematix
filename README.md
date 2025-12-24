@@ -2,6 +2,135 @@
 
 A modern, professional cinema ticket booking system built with PHP, MySQL, and clean architecture principles.
 
+## ⚡ Quick Start (Yeni Bilgisayarda)
+
+**GitHub'dan indirdikten sonra yapılacaklar:**
+
+### 1️⃣ `.env` Dosyası Oluştur
+
+```bash
+# Windows (PowerShell/CMD)
+copy config\.env.example .env
+
+# Linux/Mac
+cp config/.env.example .env
+```
+
+### 2️⃣ `.env` Dosyasını Düzenle
+
+Root klasördeki `.env` dosyasını aç ve MySQL bilgilerini gir:
+
+```env
+DB_HOST=localhost
+DB_NAME=sinematix
+DB_USER=root
+DB_PASS=senin_mysql_şifren    # ← BURAYA ŞİFRENİ YAZ
+```
+
+### 3️⃣ Veritabanını Oluştur
+
+**Otomatik Yol** (önerilen):
+```bash
+php -S localhost:8000
+```
+Tarayıcıda `http://localhost:8000` aç - veritabanı otomatik oluşacak!
+
+**Manuel Yol**:
+```bash
+mysql -u root -p < database/database.sql
+```
+
+### 4️⃣ Hazır! 🎉
+
+Tarayıcıda: `http://localhost:8000`
+
+**Demo Hesap:**
+- Email: `demo@sinematix.com`
+- Şifre: `password`
+
+---
+
+## 📋 Requirements
+
+- PHP 7.4 or higher
+- MySQL 5.7 or higher
+- Web server (Apache/Nginx) or PHP built-in server
+
+## 🛠️ Detaylı Kurulum
+
+<details>
+<summary>Adım adım kurulum (tıkla)</summary>
+
+### 1. Repository'yi Clone'la
+
+```bash
+git clone https://github.com/sudenurozturkk/sinematix.git
+cd sinematix
+```
+
+### 2. Environment Yapılandırması
+
+```bash
+# .env.example dosyasını kopyala
+copy config\.env.example .env
+```
+
+`.env` dosyasını düzenle:
+```env
+DB_HOST=localhost
+DB_NAME=sinematix
+DB_USER=root
+DB_PASS=your_mysql_password    # MySQL şifreni gir
+DB_CHARSET=utf8mb4
+
+APP_ENV=development
+APP_DEBUG=true
+APP_NAME=Sinematix
+
+SESSION_LIFETIME=7200
+SESSION_SECURE=false
+SESSION_HTTPONLY=true
+
+CACHE_ENABLED=true
+CACHE_TTL=900
+```
+
+### 3. Veritabanı Kurulumu
+
+**Seçenek 1 - Otomatik (Önerilen):**
+```bash
+php -S localhost:8000
+```
+İlk çalıştırmada Database.php otomatik olarak veritabanını oluşturacak.
+
+**Seçenek 2 - Manuel:**
+```bash
+# MySQL'e bağlan
+mysql -u root -p
+
+# Veritabanını import et
+mysql -u root -p < database/database.sql
+```
+
+### 4. Logs Klasörü
+
+Logs klasörü otomatik oluşacak, ancak manuel oluşturmak isterseniz:
+```bash
+mkdir logs
+```
+
+### 5. Uygulamayı Çalıştır
+
+```bash
+php -S localhost:8000
+```
+
+Tarayıcıda aç: `http://localhost:8000`
+
+</details>
+
+---
+
 ## ✨ Features
 
 - 🎫 **Movie Browsing** - Browse now showing and upcoming movies
@@ -25,81 +154,33 @@ This project was recently refactored to follow clean code principles:
 - ✅ **Transaction Safety** - Database transactions with proper rollback
 - ✅ **Security** - CSRF tokens, input validation, rate limiting ready
 
-## 📋 Requirements
-
-- PHP 7.4 or higher
-- MySQL 5.7 or higher
-- Web server (Apache/Nginx) or PHP built-in server
-
-## 🛠️ Installation
-
-1. **Clone the repository**
-   ```bash
-   git clone <repository-url>
-   cd sinematix
-   ```
-
-2. **Configure environment**
-   ```bash
-   cp config/.env.example .env
-   ```
-   
-   Edit `.env` with your database credentials:
-   ```env
-   DB_HOST=localhost
-   DB_NAME=sinematix
-   DB_USER=root
-   DB_PASS=your_password
-   ```
-
-3. **Import database**
-   ```bash
-   mysql -u root -p < database/database.sql
-   ```
-   
-   Or the database will be created automatically on first run.
-
-4. **Set permissions**
-   ```bash
-   chmod 755 logs/
-   ```
-
-5. **Run the application**
-   
-   Using PHP built-in server:
-   ```bash
-   php -S localhost:8000
-   ```
-   
-   Then visit: `http://localhost:8000`
-
 ## 📁 Project Structure
 
 ```
 sinematix/
-├── config/              # Configuration files
-│   ├── Config.php       # Configuration manager
-│   ├── .env.example     # Environment template
-│   └── database.php     # Legacy database config
-├── src/                 # Source code (new structure)
-│   ├── Exceptions/      # Custom exceptions
-│   ├── Helpers/         # Helper classes
+├── config/
+│   ├── Config.php           # Configuration manager
+│   ├── .env.example         # Environment template (COPY THIS!)
+│   └── database.php         # Legacy database config
+├── src/
+│   ├── Exceptions/          # Custom exceptions
+│   ├── Helpers/             # Helper classes (ViewHelper)
 │   └── ...
-├── models/              # Data models
-├── views/               # View templates
-│   ├── layouts/         # Header, footer
-│   ├── errors/          # Error pages (404, 500)
+├── models/                  # Data models
+├── views/                   # View templates
+│   ├── layouts/             # Header, footer
+│   ├── errors/              # Error pages (404, 500)
 │   └── ...
-├── assets/              # Static assets
-│   ├── css/             # Stylesheets
-│   ├── js/              # JavaScript
-│   └── images/          # Images
-├── api/                 # API endpoints
-├── database/            # Database schema
-├── logs/                # Application logs
-├── bootstrap.php        # Application bootstrap
-├── autoload.php         # PSR-4 autoloader
-└── index.php            # Entry point
+├── assets/                  # Static assets (CSS, JS, images)
+├── api/                     # API endpoints
+├── database/
+│   └── database.sql         # Database schema + sample data
+├── logs/                    # Application logs (auto-created)
+├── .env                     # YOUR CONFIG (create from .env.example)
+├── bootstrap.php            # Application bootstrap
+├── autoload.php             # PSR-4 autoloader
+├── index.php                # Entry point
+└── README.md                # This file
 ```
 
 ## 🎨 Code Quality
@@ -110,7 +191,7 @@ This project follows modern PHP best practices:
 - **SOLID Principles** - Maintainable and extensible code
 - **Error Handling** - Comprehensive exception handling
 - **Security First** - Input validation, CSRF protection, secure sessions
-- ** Type Safety** - Type hints and return types
+- **Type Safety** - Type hints and return types
 - **Documentation** - PHPDoc comments on all public methods
 
 ## 🔧 Development
@@ -149,6 +230,21 @@ After importing the database:
 - **Email**: demo@sinematix.com
 - **Password**: password
 
+## ❓ Troubleshooting
+
+### "Veritabanı bağlantısı başarısız"
+- ✅ `.env` dosyası root klasörde mi? (`config/` değil!)
+- ✅ MySQL çalışıyor mu? (`mysql -u root -p` ile test et)
+- ✅ `.env` dosyasında şifre doğru mu?
+
+### "Page not found"
+- ✅ PHP sunucu çalışıyor mu? (`php -S localhost:8000`)
+- ✅ Doğru klasörde misin? (`cd sinematix`)
+
+### "Class not found"
+- ✅ `bootstrap.php` ve `autoload.php` var mı?
+- ✅ `src/` klasörü var mı?
+
 ## 🤝 Contributing
 
 1. Fork the repository
@@ -179,3 +275,7 @@ Developed as part of a clean code refactoring initiative.
 ---
 
 **Note**: This is v2.0 after a comprehensive refactoring that removed 30MB of redundant files and applied clean code principles throughout the codebase.
+
+## 📞 Support
+
+Sorun yaşıyorsanız [Issues](https://github.com/sudenurozturkk/sinematix/issues) sayfasından bildirebilirsiniz.
