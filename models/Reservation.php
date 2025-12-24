@@ -4,48 +4,43 @@ require_once __DIR__ . '/Database.php';
 class Reservation {
     
     /**
-     * Yeni rezervasyon oluştur
+     * Create new reservation
      */
     public static function create(array $data): ?int {
-        $db = Database::getInstance();
-        
         try {
-            $db->beginTransaction();
-            
-            // Rezervasyon kodu oluştur
-            $code = self::generateCode();
-            
-            // Ana rezervasyon kaydı
-            Database::query("
-                INSERT INTO reservations 
-                (user_id, showtime_id, reservation_code, customer_name, customer_email, customer_phone, total_amount, status)
-                VALUES (?, ?, ?, ?, ?, ?, ?, 'confirmed')
-            ", [
-                $data['user_id'] ?? null,
-                $data['showtime_id'],
-                $code,
-                $data['customer_name'],
-                $data['customer_email'],
-                $data['customer_phone'] ?? null,
-                $data['total_amount']
-            ]);
-            
-            $reservationId = Database::lastInsertId();
-            
-            // Koltukları ekle
-            foreach ($data['seats'] as $seat) {
+            return Database::transaction(function() use ($data) {
+                // Generate reservation code
+                $code = self::generateCode();
+                
+                // Create main reservation record
                 Database::query("
-                    INSERT INTO reservation_seats (reservation_id, seat_id, price)
-                    VALUES (?, ?, ?)
-                ", [$reservationId, $seat['id'], $seat['price']]);
-            }
-            
-            $db->commit();
-            
-            return $reservationId;
-            
+                    INSERT INTO reservations 
+                    (user_id, showtime_id, reservation_code, customer_name, customer_email, customer_phone, total_amount, status)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, 'confirmed')
+                ", [
+                    $data['user_id'] ?? null,
+                    $data['showtime_id'],
+                    $code,
+                    $data['customer_name'],
+                    $data['customer_email'],
+                    $data['customer_phone'] ?? null,
+                    $data['total_amount']
+                ]);
+                
+                $reservationId = Database::lastInsertId();
+                
+                // Add seats
+                foreach ($data['seats'] as $seat) {
+                    Database::query("
+                        INSERT INTO reservation_seats (reservation_id, seat_id, price)
+                        VALUES (?, ?, ?)
+                    ", [$reservationId, $seat['id'], $seat['price']]);
+                }
+                
+                return $reservationId;
+            });
         } catch (Exception $e) {
-            $db->rollBack();
+            error_log("Reservation creation failed: " . $e->getMessage());
             return null;
         }
     }

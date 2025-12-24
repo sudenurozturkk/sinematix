@@ -4,7 +4,7 @@ require_once __DIR__ . '/Database.php';
 class Movie {
     
     /**
-     * Tüm aktif filmleri getir
+     * Get all active movies
      */
     public static function getAll(): array {
         return Database::fetchAll("
@@ -15,7 +15,7 @@ class Movie {
     }
     
     /**
-     * Vizyondaki filmleri getir
+     * Get now showing movies
      */
     public static function getNowShowing(): array {
         return Database::fetchAll("
@@ -29,7 +29,7 @@ class Movie {
     }
     
     /**
-     * Yakında vizyona girecek filmler
+     * Get coming soon movies
      */
     public static function getComingSoon(): array {
         return Database::fetchAll("
@@ -41,7 +41,7 @@ class Movie {
     }
     
     /**
-     * Slug ile film getir
+     * Get movie by slug
      */
     public static function getBySlug(string $slug): ?array {
         return Database::fetch("
@@ -51,7 +51,7 @@ class Movie {
     }
     
     /**
-     * ID ile film getir
+     * Get movie by ID
      */
     public static function getById(int $id): ?array {
         return Database::fetch("
@@ -61,7 +61,7 @@ class Movie {
     }
     
     /**
-     * Film arama
+     * Search movies
      */
     public static function search(string $query): array {
         $searchTerm = "%{$query}%";
@@ -74,7 +74,7 @@ class Movie {
     }
     
     /**
-     * Türe göre filmler
+     * Get movies by genre
      */
     public static function getByGenre(string $genre): array {
         return Database::fetchAll("
@@ -82,14 +82,5 @@ class Movie {
             WHERE is_active = 1 AND genre LIKE ?
             ORDER BY rating DESC
         ", ["%{$genre}%"]);
-    }
-    
-    /**
-     * Süreyi formatla (dakika -> saat dakika)
-     */
-    public static function formatDuration(int $minutes): string {
-        $hours = floor($minutes / 60);
-        $mins = $minutes % 60;
-        return $hours > 0 ? "{$hours}s {$mins}dk" : "{$mins}dk";
     }
 }

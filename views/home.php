@@ -24,7 +24,7 @@ $pageTitle = 'Vizyondaki Filmler';
             <h1 class="hero-title"><?= htmlspecialchars($featuredMovie['title']) ?></h1>
             <div class="hero-meta">
                 <span>🎬 <?= htmlspecialchars($featuredMovie['director']) ?></span>
-                <span>⏱️ <?= Movie::formatDuration($featuredMovie['duration']) ?></span>
+                <span>⏱️ <?= ViewHelper::formatDuration($featuredMovie['duration']) ?></span>
                 <span>⭐ <?= $featuredMovie['rating'] ?>/10</span>
                 <span>🎭 <?= htmlspecialchars($featuredMovie['genre']) ?></span>
             </div>
@@ -68,7 +68,7 @@ $pageTitle = 'Vizyondaki Filmler';
                     <h3 class="movie-title"><?= htmlspecialchars($movie['title']) ?></h3>
                     <div class="movie-meta">
                         <span class="movie-genre"><?= explode(',', $movie['genre'])[0] ?></span>
-                        <span>⏱️ <?= Movie::formatDuration($movie['duration']) ?></span>
+                        <span>⏱️ <?= ViewHelper::formatDuration($movie['duration']) ?></span>
                     </div>
                 </div>
             </a>

@@ -4,56 +4,69 @@
  * Cinema Ticket Booking System
  */
 
-session_start();
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
+// Load bootstrap
+require_once __DIR__ . '/bootstrap.php';
+
+// Load helpers
+require_once __DIR__ . '/src/Helpers/ViewHelper.php';
 
 // Get requested page
 $page = $_GET['page'] ?? 'home';
 
-// Route to appropriate view
-switch ($page) {
-    case 'home':
-        include __DIR__ . '/views/home.php';
-        break;
-        
-    case 'movie':
-        include __DIR__ . '/views/movie-detail.php';
-        break;
-        
-    case 'select-seat':
-        include __DIR__ . '/views/select-seat.php';
-        break;
-        
-    case 'checkout':
-        include __DIR__ . '/views/checkout.php';
-        break;
-        
-    case 'complete':
-        include __DIR__ . '/views/confirmation.php';
-        break;
-        
-    case 'my-tickets':
-        include __DIR__ . '/views/my-tickets.php';
-        break;
-    
-    case 'login':
-        include __DIR__ . '/views/login.php';
-        break;
-        
-    case 'register':
-        include __DIR__ . '/views/register.php';
-        break;
-        
-    case 'profile':
-        include __DIR__ . '/views/profile.php';
-        break;
-        
-    case 'logout':
-        include __DIR__ . '/views/logout.php';
-        break;
-        
-    default:
-        include __DIR__ . '/views/home.php';
-        break;
+// Allowed pages (whitelist for security)
+$allowedPages = [
+    'home', 'movie', 'select-seat', 'checkout', 'complete',
+    'my-tickets', 'login', 'register', 'profile', 'logout'
+];
+
+// Validate page
+if (!in_array($page, $allowedPages)) {
+    http_response_code(404);
+    if (file_exists(__DIR__ . '/views/errors/404.php')) {
+        include __DIR__ . '/views/errors/404.php';
+    } else {
+        echo "Page not found";
+    }
+    exit;
+}
+
+// Map page to view file
+$viewMap = [
+    'home' => 'home.php',
+    'movie' => 'movie-detail.php',
+    'select-seat' => 'select-seat.php',
+    'checkout' => 'checkout.php',
+    'complete' => 'confirmation.php',
+    'my-tickets' => 'my-tickets.php',
+    'login' => 'login.php',
+    'register' => 'register.php',
+    'profile' => 'profile.php',
+    'logout' => 'logout.php',
+];
+
+// Get view file
+$viewFile = __DIR__ . '/views/' . $viewMap[$page];
+
+// Check if view exists
+if (!file_exists($viewFile)) {
+    http_response_code(404);
+    if (file_exists(__DIR__ . '/views/errors/404.php')) {
+        include __DIR__ . '/views/errors/404.php';
+    } else {
+        echo "View file not found";
+    }
+    exit;
+}
+
+// Include view
+try {
+    include $viewFile;
+} catch (Exception $e) {
+    error_log("View error: " . $e->getMessage());
+    http_response_code(500);
+    if (file_exists(__DIR__ . '/views/errors/500.php')) {
+        include __DIR__ . '/views/errors/500.php';
+    } else {
+        echo "An error occurred";
+    }
 }

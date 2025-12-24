@@ -43,7 +43,7 @@ $monthNames = ['Oca', 'Şub', 'Mar', 'Nis', 'May', 'Haz', 'Tem', 'Ağu', 'Eyl', 
                 <?php endif; ?>
                 
                 <div class="movie-detail-meta">
-                    <span class="meta-tag">⏱️ <?= Movie::formatDuration($movie['duration']) ?></span>
+                    <span class="meta-tag">⏱️ <?= ViewHelper::formatDuration($movie['duration']) ?></span>
                     <span class="meta-tag">🎭 <?= htmlspecialchars($movie['genre']) ?></span>
                     <span class="meta-tag">🗣️ <?= htmlspecialchars($movie['language']) ?></span>
                     <span class="meta-tag age-limit"><?= htmlspecialchars($movie['age_limit']) ?></span>
